@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Blocky Animal</title>
+    <script src="../lib/webgl-utils.js"></script>
+    <script src="../lib/webgl-debug.js"></script>
+    <script src="../lib/cuon-utils.js"></script>
+    <script src="../lib/cuon-matrix.js"></script>
+    <script src="Point.js"></script>
+    <script src="Triangle.js"></script>
+    <script src="Circle.js"></script>
+    <script src="Cube.js"></script>
+    <script src="Cone.js"></script>
+    <script src="BlockyAnimal.js"></script>
+  </head>
+
+  <body onload="main()">
+    <h2 id="fps">FPS</h2>
+      <canvas id="webgl" width="400" height="400">
+        Please use a browser that supports "canvas"
+      </canvas>
+
+    <div style="display: flex;">
+      <div>
+        <div style="display: flex; margin-top: 10px; margin-left: 3px;">
+          <p>All four legs</p>
+          <input type="range" min="0" max="60" value="0" class="slider" id="allLegsSlider"/>
+          <button type="button" id="animate">Animate</button>
+          <button type="button" id="stopAnimate">Stop Animate</button>
+        </div>
+
+        <div style="display: flex; margin-top: 10px; ">
+          <p>Front left foot</p>
+          <input type="range" min="0" max="30" value="0" class="slider" id="frontFootSlider"/>
+          <button type="button" id="animateFoot">Animate</button>
+          <button type="button" id="stopAnimateFoot">Stop Animate</button>
+        </div>
+
+        <div style="display: flex; margin-top: 10px; ">
+          <p>Front left toes</p>
+          <input type="range" min="0" max="30" value="0" class="slider" id="toeSlider"/>
+          <button type="button" id="animateToe">Animate</button>
+          <button type="button" id="stopAnimateToe">Stop Animate</button>
+        </div>
+
+        <div style="display: flex;">
+          <p>Camera Angle</p>
+          <input type="range" min="-90" max="90" value="5" class="slider" id="cameraSlider"/>
+        </div>
+      </div>
+      <div style="margin-left: 10vw; width: 40%;">
+        <h2>Notes to the graders</h2>
+        <p>
+          1. This animal is a minecraft pig. This may not have been the best choice for complex joints but I did my best to handle 3 levels of joint movements (leg, foot, and toes)<br/>
+          2. Doing a shift click will show gems on the crown that change color.<br/>
+          3. I used copilot to help autofill the matrix translations to speed up development.<br/>
+          4. I also used copilot to generate the cone class. <br/>
+          5. There is a cone in the center of the crown.<br/>
+          6. I referenced the professor's code for the initial setup and also used the textbook.
+        </p>
+      </div>
+    </div>
+    
+    
+  </body>
+</html>
