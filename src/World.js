@@ -10,7 +10,7 @@ var VSHADER_SOURCE =`
   uniform mat4 u_ViewMatrix;
   uniform mat4 u_ProjectionMatrix;
   void main() {
-    gl_Position = u_GlobalRotateMatrix * u_ModelMatrix * a_Position;
+    gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_GlobalRotateMatrix * u_ModelMatrix * a_Position;
     v_UV = a_UV;
   }`
 
@@ -191,7 +191,7 @@ function connectVariablesToGLSL(){
   }
 
 
-  /*
+  
   u_ViewMatrix = gl.getUniformLocation(gl.program, 'u_ViewMatrix');
   if (!u_ViewMatrix) {
     console.log('Failed to get the storage location of u_ViewMatrix');
@@ -202,7 +202,7 @@ function connectVariablesToGLSL(){
     console.log('Failed to get the storage location of u_ProjectionMatrix');
     return;
   }
-  */
+  
 
   u_Sampler0 = gl.getUniformLocation(gl.program, 'u_Sampler0');
   if (!u_Sampler0) {
@@ -227,6 +227,7 @@ function main() {
 
   connectVariablesToGLSL();
   addActionsForHtmlUI();
+  document.onkeydown = keydown;
   initTextures();
 
   // Register function (event handler) to be called on a mouse press  
@@ -236,6 +237,28 @@ function main() {
   // Clear <canvas>
   
   requestAnimationFrame(tick);
+}
+
+function keydown(ev) {
+  if (ev.keyCode == 65) { // A
+    camera.left();
+  } else if (ev.keyCode == 68) { // D
+    camera.right();
+  } else if (ev.keyCode == 87) { // W
+    camera.forward();
+  } else if (ev.keyCode == 83) { // S
+    camera.backward();
+  } else if (ev.keyCode == 37) { // Left arrow key
+    camera.panLeft(1);
+  } else if (ev.keyCode == 39) { // Right arrow key 
+    camera.panRight(1);
+  } else if (ev.keyCode == 38) { // Up arrow key 
+    camera.eye.elements[1] += 0.2;
+  } else if (ev.keyCode == 40) { // Down arrow key 
+    camera.eye.elements[1] -= 0.2;
+  }
+  console.log(ev.keyCode);
+  renderScene();
 }
 
 
@@ -296,8 +319,24 @@ function updateAnimationInfo(){
   }
 }
 
+var camera = new Camera();
+camera.eye = new Vector3([0.0, 0.0, 3.0]);
+camera.at = new Vector3([0.0, 0.0, -100]);
+camera.up = new Vector3([0.0, 1.0, 0.0]);
+var g_eye = [0, 0, 3]; 
+var g_at = [0, 0, -100];
+var g_up = [0, 1, 0];
+
 function renderScene(){
-  
+  var projMat = new Matrix4()
+  projMat.setPerspective(50, canvas.width/canvas.height, 1, 100);
+  gl.uniformMatrix4fv(u_ProjectionMatrix, false, projMat.elements);
+
+  var viewMat = new Matrix4()
+  viewMat.setLookAt(camera.eye.elements[0], camera.eye.elements[1], camera.eye.elements[2],
+    camera.at.elements[0], camera.at.elements[1], camera.at.elements[2],
+    camera.up.elements[0], camera.up.elements[1], camera.up.elements[2]);
+  gl.uniformMatrix4fv(u_ViewMatrix, false, viewMat.elements);
 
   var globalRotateMat = new Matrix4()
     .rotate(g_globalAngleY, 0, 1, 0)
