@@ -7,21 +7,32 @@ var VSHADER_SOURCE =`
   varying vec2 v_UV;
   uniform mat4 u_ModelMatrix;
   uniform mat4 u_GlobalRotateMatrix;
+  uniform mat4 u_ViewMatrix;
+  uniform mat4 u_ProjectionMatrix;
   void main() {
     gl_Position = u_GlobalRotateMatrix * u_ModelMatrix * a_Position;
     v_UV = a_UV;
   }`
 
 // Fragment shader program
-var FSHADER_SOURCE =`
+var FSHADER_SOURCE = `
   precision mediump float;
   varying vec2 v_UV;
-  uniform vec4 u_FragColor;
+  uniform vec4 u_FragColor; 
   uniform sampler2D u_Sampler0;
+  uniform int u_whichTexture;
   void main() {
+    
+    if (u_whichTexture == -2) {
     gl_FragColor = u_FragColor;
-    gl_FragColor = vec4(v_UV, 1.0, 1.0);
-    gl_FragColor = texture2D(u_Sampler0, v_UV);
+    } else if (u_whichTexture == -1) {
+     gl_FragColor = vec4(v_UV, 1.0, 1.0);
+    } else if (u_whichTexture == 0) {
+      gl_FragColor = texture2D(u_Sampler0, v_UV);
+    } else {
+      gl_FragColor = vec4(1, .2, .2, 1);
+    }
+
   }`
 
 
@@ -33,10 +44,12 @@ let u_FragColor;
 let u_Size;
 let u_ModelMatrix;
 let u_GlobalRotateMatrix;
-let g_selectedColor=[1.0, 0.0, 0.0, 1.0]
-let g_selectedSize = 5;
+//let u_ViewMatrix;
+//let u_ProjectionMatrix;
+let u_Sampler0;
+let u_whichTexture;
 
-let g_segments = 20;
+
 let g_globalAngle = 5;
 let g_allLegsAngle = 0.0;
 let g_frontLegFootAngle = 0.0;
@@ -123,7 +136,7 @@ function sendTextureToTEXTURE0(image) {
     gl.bindTexture(gl.TEXTURE_2D, texture); // Bind the texture object to target
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); // Set texture filtering
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image); 
-    gl.uniform1i(u_Sampler, 0); // Pass the texture unit 0 to u_Sampler
+    gl.uniform1i(u_Sampler0, 0); // Pass the texture unit 0 to u_Sampler
 }
 
 function setupWebGL(){
@@ -167,7 +180,7 @@ function connectVariablesToGLSL(){
   }
 
   u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
-if (!u_ModelMatrix) {
+  if (!u_ModelMatrix) {
     console.log('Failed to get the storage location of u_ModelMatrix');
     return;
   }
@@ -176,6 +189,33 @@ if (!u_ModelMatrix) {
     console.log('Failed to get the storage location of u_GlobalRotateMatrix');
     return;
   }
+
+
+  /*
+  u_ViewMatrix = gl.getUniformLocation(gl.program, 'u_ViewMatrix');
+  if (!u_ViewMatrix) {
+    console.log('Failed to get the storage location of u_ViewMatrix');
+    return;
+  }
+  u_ProjectionMatrix = gl.getUniformLocation(gl.program, 'u_ProjectionMatrix');
+  if (!u_ProjectionMatrix) {
+    console.log('Failed to get the storage location of u_ProjectionMatrix');
+    return;
+  }
+  */
+
+  u_Sampler0 = gl.getUniformLocation(gl.program, 'u_Sampler0');
+  if (!u_Sampler0) {
+    console.log('Failed to get the storage location of u_Sampler0');
+    return;
+  }
+
+  u_whichTexture = gl.getUniformLocation(gl.program, 'u_whichTexture');
+  if (!u_whichTexture) {
+    console.log('Failed to get the storage location of u_whichTexture');
+    return; 
+  }
+
   var identityM = new Matrix4();
   gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
 
