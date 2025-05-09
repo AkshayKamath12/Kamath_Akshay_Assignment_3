@@ -50,7 +50,7 @@ let u_Sampler0;
 let u_whichTexture;
 
 
-let g_globalAngle = 5;
+let g_globalAngle = 80;
 let g_allLegsAngle = 0.0;
 let g_frontLegFootAngle = 0.0;
 let g_frontToeAngle = 0.0;
@@ -257,7 +257,9 @@ function keydown(ev) {
   } else if (ev.keyCode == 40) { // Down arrow key 
     camera.eye.elements[1] -= 0.2;
   }
-  console.log(ev.keyCode);
+  console.log(camera.eye.elements);
+  console.log(camera.at.elements);
+  console.log(camera.up.elements);
   renderScene();
 }
 
@@ -320,37 +322,52 @@ function updateAnimationInfo(){
 }
 
 var camera = new Camera();
-camera.eye = new Vector3([0.0, 0.0, 3.0]);
-camera.at = new Vector3([0.0, 0.0, -100]);
+camera.eye = new Vector3([7.0, 0.6, -4.2]);
+camera.at = new Vector3([83.0, 0.0, -68.0]);
 camera.up = new Vector3([0.0, 1.0, 0.0]);
-var g_eye = [0, 0, 3]; 
-var g_at = [0, 0, -100];
-var g_up = [0, 1, 0];
+
 
 function renderScene(){
-  var projMat = new Matrix4()
-  projMat.setPerspective(50, canvas.width/canvas.height, 1, 100);
+  var projMat = new Matrix4();
+  projMat.setPerspective(50, canvas.width / canvas.height, 1, 100);
   gl.uniformMatrix4fv(u_ProjectionMatrix, false, projMat.elements);
 
-  var viewMat = new Matrix4()
-  viewMat.setLookAt(camera.eye.elements[0], camera.eye.elements[1], camera.eye.elements[2],
+  var viewMat = new Matrix4();
+  viewMat.setLookAt(
+    camera.eye.elements[0], camera.eye.elements[1], camera.eye.elements[2],
     camera.at.elements[0], camera.at.elements[1], camera.at.elements[2],
-    camera.up.elements[0], camera.up.elements[1], camera.up.elements[2]);
+    camera.up.elements[0], camera.up.elements[1], camera.up.elements[2]
+  );
   gl.uniformMatrix4fv(u_ViewMatrix, false, viewMat.elements);
 
   var globalRotateMat = new Matrix4()
     .rotate(g_globalAngleY, 0, 1, 0)
     .rotate(g_globalAngleX, 1, 0, 0)
-    .rotate(g_globalAngle, 0, 1, 0);; 
+    .rotate(g_globalAngle, 0, 1, 0);
   globalRotateMat.translate(-0.2, 0.1, 0);
   gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotateMat.elements);
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.clear(gl.COLOR_BUFFER_BIT);
+
+  // Add a green floor
+  var floor = new Cube();
+  floor.color = [0.0, 1.0, 0.0, 1.0]; // Green color
+  floor.matrix.translate(-2.0, -0.5, -2.0); // Position the floor below the animal
+  floor.matrix.scale(50.0, 0, 50.0); // Scale to make it wide and flat
+  floor.textureNum = -2;
+  floor.render();
+
+  var sky = new Cube();
+  sky.color = [0.0, 0.0, 1.0, 1.0]; // Blue color
+  sky.textureNum = 0;
+  sky.matrix.translate(-2.0, -1, -2.0); // Position the sky above the animal
+  sky.matrix.scale(50.0, 50.0, 50.0); // Scale to make it wide and flat
+  sky.render();
   
   var head = new Cube();
   head.color = [1, 0.55, 0.63, 1.0]
-  head.matrix.translate(-0.5, 0.25, 0);
+  head.matrix.translate(10, 0.25, 10);
   head.matrix.rotate(-90, 0, 0, 1);
   head.matrix.rotate(-20, 1, 0, 0);
   head.matrix.rotate(-10, 0, 1, 0);
