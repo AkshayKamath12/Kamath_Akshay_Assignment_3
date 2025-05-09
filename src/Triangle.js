@@ -89,8 +89,8 @@ function drawTriangle(vertices, angle=0) {
 
 function drawTriangle3D(vertices) {
 
-    var n = 3;
-
+    var n = vertices.length / 3; // The number of vertices
+    
     var vertexBuffer = gl.createBuffer();
     if (!vertexBuffer) {
         console.log('Failed to create the buffer object');
@@ -109,7 +109,7 @@ function drawTriangle3D(vertices) {
 
 function drawTriangle3DUV(vertices, uv) {
 
-    var n = 3;
+    var n = uv.length / 2; // The number of vertices
 
     var vertexBuffer = gl.createBuffer();
     if (!vertexBuffer) {

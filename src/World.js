@@ -248,6 +248,10 @@ function keydown(ev) {
     camera.forward();
   } else if (ev.keyCode == 83) { // S
     camera.backward();
+  } else if (ev.keyCode == 69) { // E
+    camera.panRight(1);
+  }else if (ev.keyCode == 81) { // Q
+    camera.panLeft(1);
   } else if (ev.keyCode == 37) { // Left arrow key
     camera.panLeft(1);
   } else if (ev.keyCode == 39) { // Right arrow key 
@@ -257,9 +261,7 @@ function keydown(ev) {
   } else if (ev.keyCode == 40) { // Down arrow key 
     camera.eye.elements[1] -= 0.2;
   }
-  console.log(camera.eye.elements);
-  console.log(camera.at.elements);
-  console.log(camera.up.elements);
+
   renderScene();
 }
 
@@ -327,6 +329,20 @@ camera.at = new Vector3([83.0, 0.0, -68.0]);
 camera.up = new Vector3([0.0, 1.0, 0.0]);
 
 
+function drawMap(){
+  for(var i = 0; i < 32; i++){  
+    for(var j = 0; j < 32; j++){
+      if (i < 1 || i > 30 || j < 1 || j > 30) {
+        var cube = new Cube();
+        cube.color = [0.3, 0.1, 0.1, 1.0];
+        cube.matrix.translate(i, -0.5, j);
+        //cube.matrix.scale(0.5, 0.5, 0.5);
+        cube.renderFast();
+      }
+    }
+  }
+}
+
 function renderScene(){
   var projMat = new Matrix4();
   projMat.setPerspective(50, canvas.width / canvas.height, 1, 100);
@@ -365,6 +381,9 @@ function renderScene(){
   sky.matrix.scale(50.0, 50.0, 50.0); // Scale to make it wide and flat
   sky.render();
   
+  // Draw the map
+  drawMap();
+
   var head = new Cube();
   head.color = [1, 0.55, 0.63, 1.0]
   head.matrix.translate(10, 0.25, 10);
