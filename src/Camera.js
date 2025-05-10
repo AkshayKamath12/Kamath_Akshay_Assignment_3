@@ -83,6 +83,9 @@ class Camera{
 
     cameraOutOfBounds(cameraEye) {
         // Define the boundaries of the map
+        if (cameraEye.elements[1] < 0) {
+            return true; // Camera is out of bounds
+        }
         const minX = 4, maxX = 33;
         const minZ = -27.7, maxZ = 0.6;
 

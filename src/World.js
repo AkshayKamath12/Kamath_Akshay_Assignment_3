@@ -78,17 +78,6 @@ let gemsColor2 = [0.0, 0.0, 1.0, 1.0];
 let gemsColor3 = [1.0, 0.0, 0.0, 1.0];
 
 function addActionsForHtmlUI(){
-
-  document.getElementById("allLegsSlider").addEventListener('mousemove', function() {g_allLegsAngle = this.value;renderScene();});
-  document.getElementById("frontFootSlider").addEventListener('mousemove', function() {g_frontLegFootAngle = this.value;renderScene();});
-  document.getElementById("toeSlider").addEventListener('mousemove', function() {g_frontToeAngle = this.value;renderScene();});
-  document.getElementById("cameraSlider").addEventListener('mousemove', function() {g_globalAngle = this.value; renderScene();});
-  document.getElementById('animate').addEventListener('click', function() {animate = true;});
-  document.getElementById('animateFoot').addEventListener('click', function() {animateFoot = true;});
-  document.getElementById('animateToe').addEventListener('click', function() {animateToes = true;});
-  document.getElementById('stopAnimate').addEventListener('click', function() {animate = false;});
-  document.getElementById('stopAnimateFoot').addEventListener('click', function() {animateFoot = false;});
-  document.getElementById('stopAnimateToe').addEventListener('click', function() {animateToes = false;});
   canvas.addEventListener('mousedown', (e) => {
   if (e.shiftKey) {
     gemsAnimate = true;
@@ -118,61 +107,6 @@ function addActionsForHtmlUI(){
 });
 }
 
-function screenToWorld(webGLX, webGLY) {
-    // Create the projection matrix
-    const projMat = new Matrix4();
-    projMat.setPerspective(50, canvas.width / canvas.height, 1, 100);
-
-    // Create the view matrix using the camera's eye, at, and up vectors
-    const viewMat = new Matrix4();
-    viewMat.setLookAt(
-        camera.eye.elements[0], camera.eye.elements[1], camera.eye.elements[2],
-        camera.at.elements[0], camera.at.elements[1], camera.at.elements[2],
-        camera.up.elements[0], camera.up.elements[1], camera.up.elements[2]
-    );
-
-    // Combine the projection and view matrices
-    const projViewMat = new Matrix4();
-    projViewMat.set(projMat).multiply(viewMat);
-
-    // Invert the combined matrix
-    const invProjViewMat = new Matrix4();
-    invProjViewMat.setInverseOf(projViewMat);
-
-    // Convert screen coordinates to clip space coordinates
-    const clipCoords = new Vector4([webGLX, webGLY, -1.0, 1.0]);
-
-    // Transform clip space coordinates to world coordinates
-    const worldCoords = invProjViewMat.multiplyVector4(clipCoords);
-
-    // Convert from homogeneous coordinates to 3D world coordinates
-    const worldPosition = new Vector3([
-        worldCoords.elements[0] / worldCoords.elements[3],
-        worldCoords.elements[1] / worldCoords.elements[3],
-        worldCoords.elements[2] / worldCoords.elements[3]
-    ]);
-    console.log("World Position: " + worldPosition.elements[0] + ", " + worldPosition.elements[1] + ", " + worldPosition.elements[2]);
-
-
-    return new Vector3([
-        worldPosition.elements[0] + camera.eye.elements[0],
-        worldPosition.elements[1] + camera.eye.elements[1],
-        worldPosition.elements[2] + camera.eye.elements[2]
-    ]);;
-}
-
-/*
-function addCubeAt(worldCoords) {
-    console.log("Adding cube at: " + worldCoords.elements[0] + ", " + worldCoords.elements[1] + ", " + worldCoords.elements[2]);
-    const cube = new Cube();
-    cube.textureNum = 1; // Use the wall texture
-    cube.matrix.translate(worldCoords.elements[0], worldCoords.elements[1], worldCoords.elements[2]);
-    cube.matrix.scale(1, 1, 1);
-    cube.renderFast();
-    g_shapes_list.push(cube);
-    renderScene();
-}
-    */
 
 function initTextures() {
     var skyImg = new Image(); 
@@ -623,7 +557,7 @@ function drawRoof(x, y, z, height){
 
   var cube = new Cube();
   cube.color = [0.3, 0.1, 0.1, 1.0];
-  cube.matrix.translate(x + 1, y+height + 1, z + 1);
+  cube.matrix.translate(x + 0.75, y+height + 1, z + 1);
   cube.matrix.scale(0.5, 0.5, 0.5);
   cube.textureNum = 1;
   cube.renderFast();
