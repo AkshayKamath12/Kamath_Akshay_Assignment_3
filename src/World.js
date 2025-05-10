@@ -259,8 +259,12 @@ function keydown(ev) {
   } else if (ev.keyCode == 38) { // Up arrow key 
     camera.eye.elements[1] += 0.2;
   } else if (ev.keyCode == 40) { // Down arrow key 
-    camera.eye.elements[1] -= 0.2;
+    if(camera.eye.elements[1] > 0.2){
+      camera.eye.elements[1] -= 0.2;
+    }
+    
   }
+  console.log("eye: " + camera.eye.elements[0] + ", " + camera.eye.elements[1] + ", " + camera.eye.elements[2]);
 
   renderScene();
 }
@@ -330,10 +334,11 @@ camera.up = new Vector3([0.0, 1.0, 0.0]);
 
 
 function drawMap(){
+  var cube = new Cube();
   for(var i = 0; i < 32; i++){  
     for(var j = 0; j < 32; j++){
       if (i < 1 || i > 30 || j < 1 || j > 30) {
-        var cube = new Cube();
+        cube = new Cube();
         cube.color = [0.3, 0.1, 0.1, 1.0];
         cube.matrix.translate(i, -0.5, j);
         //cube.matrix.scale(0.5, 0.5, 0.5);
@@ -372,14 +377,14 @@ function renderScene(){
   floor.matrix.translate(-2.0, -0.5, -2.0); // Position the floor below the animal
   floor.matrix.scale(50.0, 0, 50.0); // Scale to make it wide and flat
   floor.textureNum = -2;
-  floor.render();
+  floor.renderFast();
 
   var sky = new Cube();
   sky.color = [0.0, 0.0, 1.0, 1.0]; // Blue color
   sky.textureNum = 0;
   sky.matrix.translate(-2.0, -1, -2.0); // Position the sky above the animal
   sky.matrix.scale(50.0, 50.0, 50.0); // Scale to make it wide and flat
-  sky.render();
+  sky.renderFast();
   
   // Draw the map
   drawMap();
@@ -398,7 +403,7 @@ function renderScene(){
   var pupilMatrix2 = new Matrix4(head.matrix);
   var crownMatrix = new Matrix4(head.matrix);
   head.matrix.scale(0.5, 0.5, 0.5);
-  head.render();
+  head.renderFast();
 
   var nose = new Cube();
   nose.color = [1, 0.55, 0.63, 1.0]
@@ -407,49 +412,49 @@ function renderScene(){
   var nostrilMatrix = new Matrix4(nose.matrix);
   var nostrilMatrix2 = new Matrix4(nose.matrix);
   nose.matrix.scale(0.2, 0.24, 0.2);
-  nose.render();
+  nose.renderFast();
 
   var nostril = new Cube();
   nostril.color = [0.52, 0.29, 0, 1.0]
   nostril.matrix = nostrilMatrix;
   nostril.matrix.translate(0.066, 0.159, -0.015);
   nostril.matrix.scale(0.08, 0.08, 0.05);
-  nostril.render();
+  nostril.renderFast();
 
   var nostril2 = new Cube();
   nostril2.color = [0.52, 0.29, 0, 1.0]
   nostril2.matrix = nostrilMatrix2;
   nostril2.matrix.translate(0.066, 0.0001, -0.015);
   nostril2.matrix.scale(0.08, 0.08, 0.05);
-  nostril2.render();
+  nostril2.renderFast();
 
   var eye = new Cube();
   eye.color = [1, 1, 1, 1.0]
   eye.matrix = eyeMatrix;
   eye.matrix.translate(0.1, 0.38, -0.01);
   eye.matrix.scale(0.1, 0.115, 0.1);
-  eye.render();
+  eye.renderFast();
 
   var pupil = new Cube();
   pupil.color = [0, 0, 0, 1.0]
   pupil.matrix = pupilMatrix;
   pupil.matrix.translate(0.1, 0.44, -0.02);
   pupil.matrix.scale(0.1, 0.0575, 0.1);
-  pupil.render();
+  pupil.renderFast();
 
   var eye2 = new Cube();
   eye2.color = [1, 1, 1, 1.0]
   eye2.matrix = eyeMatrix2;
   eye2.matrix.translate(0.1, 0.001, -0.02);
   eye2.matrix.scale(0.1, 0.115, 0.1);
-  eye2.render();
+  eye2.renderFast();
 
   var pupil2 = new Cube();
   pupil2.color = [0, 0, 0, 1.0]
   pupil2.matrix = pupilMatrix2;
   pupil2.matrix.translate(0.1, 0.0001, -0.04);
   pupil2.matrix.scale(0.1, 0.0575, 0.1);
-  pupil2.render();
+  pupil2.renderFast();
 
 
   var body = new Cube();
@@ -461,7 +466,7 @@ function renderScene(){
   var tmpMatrix4 = new Matrix4(head.matrix);
   var tmpMatrix5 = new Matrix4(head.matrix);
   body.matrix.scale(0.5, 0.7, 0.7);
-  body.render();
+  body.renderFast();
 
   var crown = new Cube();
   crown.color = [1, 0.84, 0, 1.0]
@@ -480,7 +485,7 @@ function renderScene(){
   var crownGemMatrix2 = new Matrix4(crown.matrix);
   var crownGemMatrix3 = new Matrix4(crown.matrix);
   crown.matrix.scale(0.1, 0.53, 0.51);
-  crown.render();
+  crown.renderFast();
 
   var crownGem = new Cube();
   crownGem.color = gemsColor1
@@ -502,9 +507,9 @@ function renderScene(){
   
 
   if(gemsAnimate){
-    crownGem.render();
-    crownGem2.render();
-    crownGem3.render();
+    crownGem.renderFast();
+    crownGem2.renderFast();
+    crownGem3.renderFast();
   }
 
   var crownCorner = new Cube();
@@ -512,56 +517,56 @@ function renderScene(){
   crownCorner.matrix = crownCornerMatrix;
   crownCorner.matrix.translate(-0.08, 0, 0);
   crownCorner.matrix.scale(0.1, 0.1, 0.1);
-  crownCorner.render();
+  crownCorner.renderFast();
 
   var crownMiddle = new Cube();
   crownMiddle.color = [1, 0.84, 0, 1.0]
   crownMiddle.matrix = crownMiddleMatrix;
   crownMiddle.matrix.translate(-0.08, 0.2, 0);
   crownMiddle.matrix.scale(0.1, 0.1, 0.1);
-  crownMiddle.render();
+  crownMiddle.renderFast();
 
   var crownCorner2 = new Cube();
   crownCorner2.color = [1, 0.84, 0, 1.0]
   crownCorner2.matrix = crownCornerMatrix2;
   crownCorner2.matrix.translate(-0.08, 0.43, 0);
   crownCorner2.matrix.scale(0.1, 0.1, 0.1);
-  crownCorner2.render();
+  crownCorner2.renderFast();
 
   var crownMiddle2 = new Cube();
   crownMiddle2.color = [1, 0.84, 0, 1.0]
   crownMiddle2.matrix = crownMiddleMatrix2;
   crownMiddle2.matrix.translate(-0.08, 0.2, 0.4);
   crownMiddle2.matrix.scale(0.1, 0.1, 0.1);
-  crownMiddle2.render();
+  crownMiddle2.renderFast();
 
   var crownCorner3 = new Cube();
   crownCorner3.color = [1, 0.84, 0, 1.0]
   crownCorner3.matrix = crownCornerMatrix3;
   crownCorner3.matrix.translate(-0.08, 0.43, 0.4);
   crownCorner3.matrix.scale(0.1, 0.1, 0.1);
-  crownCorner3.render();
+  crownCorner3.renderFast();
 
   var crownMiddle3 = new Cube();
   crownMiddle3.color = [1, 0.84, 0, 1.0]
   crownMiddle3.matrix = crownMiddleMatrix3;
   crownMiddle3.matrix.translate(-0.08, 0.43, 0.2);
   crownMiddle3.matrix.scale(0.1, 0.1, 0.1);
-  crownMiddle3.render();
+  crownMiddle3.renderFast();
 
   var crownCorner4 = new Cube();
   crownCorner4.color = [1, 0.84, 0, 1.0]
   crownCorner4.matrix = crownCornerMatrix4;
   crownCorner4.matrix.translate(-0.08, 0, 0.4);
   crownCorner4.matrix.scale(0.1, 0.1, 0.1);
-  crownCorner4.render();
+  crownCorner4.renderFast();
   
   var crownMiddle4 = new Cube();
   crownMiddle4.color = [1, 0.84, 0, 1.0]
   crownMiddle4.matrix = crownMiddleMatrix4;
   crownMiddle4.matrix.translate(-0.08, 0, 0.2);
   crownMiddle4.matrix.scale(0.1, 0.1, 0.1);
-  crownMiddle4.render();
+  crownMiddle4.renderFast();
 
   var crownCenter = new Cone();
   crownCenter.color = [1, 0.84, 0, 1.0]
@@ -578,7 +583,7 @@ function renderScene(){
   frontLeftLeg.matrix.rotate(g_allLegsAngle, 0, 0, 1);
   var frontFootMatrix = new Matrix4(frontLeftLeg.matrix);
   frontLeftLeg.matrix.scale(0.7, 0.4, 0.3);
-  frontLeftLeg.render();
+  frontLeftLeg.renderFast();
 
   var frontFoot = new Cube();
   frontFoot.color = [1, 0.55, 0.63, 1.0]
@@ -588,7 +593,7 @@ function renderScene(){
   var frontToeMatrix = new Matrix4(frontFoot.matrix);
   var frontToeMatrix2 = new Matrix4(frontFoot.matrix);
   frontFoot.matrix.scale(0.2, 0.4, 0.3);
-  frontFoot.render();
+  frontFoot.renderFast();
 
   var frontToe = new Cube();
   frontToe.color = [0.52, 0.29, 0, 1.0]
@@ -596,7 +601,7 @@ function renderScene(){
   frontToe.matrix.translate(0.099, 0.299, -0.01);
   frontToe.matrix.scale(0.1, 0.1, 0.1);
   frontToe.matrix.rotate(g_frontToeAngle, 0, 1, 0);
-  frontToe.render();
+  frontToe.renderFast();
 
   var frontToe2 = new Cube();
   frontToe2.color = [0.52, 0.29, 0, 1.0]
@@ -604,7 +609,7 @@ function renderScene(){
   frontToe2.matrix.translate(0.099, 0.001, -0.01);
   frontToe2.matrix.scale(0.1, 0.1, 0.1);
   frontToe2.matrix.rotate(g_frontToeAngle, 0, 1, 0);
-  frontToe2.render();
+  frontToe2.renderFast();
 
   var frontRightLeg = new Cube();
   frontRightLeg.color = [1, 0.55, 0.63, 1.0]
@@ -614,21 +619,21 @@ function renderScene(){
   var frontToeMatrix3 = new Matrix4(frontRightLeg.matrix);
   var frontToeMatrix4 = new Matrix4(frontRightLeg.matrix);
   frontRightLeg.matrix.scale(0.7, 0.4, 0.3);
-  frontRightLeg.render();
+  frontRightLeg.renderFast();
 
   var frontToe3 = new Cube();
   frontToe3.color = [0.52, 0.29, 0, 1.0]
   frontToe3.matrix = frontToeMatrix3;
   frontToe3.matrix.translate(0.599, 0.299, -0.001);
   frontToe3.matrix.scale(0.1, 0.1, 0.1);
-  frontToe3.render();
+  frontToe3.renderFast();
 
   var frontToe4 = new Cube();
   frontToe4.color = [0.52, 0.29, 0, 1.0]
   frontToe4.matrix = frontToeMatrix4;
   frontToe4.matrix.translate(0.599, 0.001, -0.01);
   frontToe4.matrix.scale(0.1, 0.1, 0.1);
-  frontToe4.render();
+  frontToe4.renderFast();
 
   var backRightLeg = new Cube();
   backRightLeg.color = [1, 0.55, 0.63, 1.0]
@@ -638,21 +643,21 @@ function renderScene(){
   var backToeMatrix1 = new Matrix4(backRightLeg.matrix);
   var backToeMatrix2 = new Matrix4(backRightLeg.matrix);
   backRightLeg.matrix.scale(0.7, 0.4, 0.3);
-  backRightLeg.render();
+  backRightLeg.renderFast();
 
   var backToe1 = new Cube();
   backToe1.color = [0.52, 0.29, 0, 1.0]
   backToe1.matrix = backToeMatrix1;
   backToe1.matrix.translate(0.599, 0.299, -0.001);
   backToe1.matrix.scale(0.1, 0.1, 0.1);
-  backToe1.render();
+  backToe1.renderFast();
 
   var backToe2 = new Cube();
   backToe2.color = [0.52, 0.29, 0, 1.0]
   backToe2.matrix = backToeMatrix2;
   backToe2.matrix.translate(0.599, 0.001, -0.01);
   backToe2.matrix.scale(0.1, 0.1, 0.1);
-  backToe2.render();
+  backToe2.renderFast();
 
   var backLeftLeg = new Cube();
   backLeftLeg.color = [1, 0.55, 0.63, 1.0]
@@ -662,19 +667,19 @@ function renderScene(){
   var backToeMatrix3 = new Matrix4(backLeftLeg.matrix);
   var backToeMatrix4 = new Matrix4(backLeftLeg.matrix);
   backLeftLeg.matrix.scale(0.7, 0.4, 0.3);
-  backLeftLeg.render();
+  backLeftLeg.renderFast();
 
   var backToe3 = new Cube();
   backToe3.color = [0.52, 0.29, 0, 1.0]
   backToe3.matrix = backToeMatrix3;
   backToe3.matrix.translate(0.599, 0.299, -0.001);
   backToe3.matrix.scale(0.1, 0.1, 0.1);
-  backToe3.render();
+  backToe3.renderFast();
 
   var backToe4 = new Cube();
   backToe4.color = [0.52, 0.29, 0, 1.0]
   backToe4.matrix = backToeMatrix4;
   backToe4.matrix.translate(0.599, 0.001, -0.01);
   backToe4.matrix.scale(0.1, 0.1, 0.1);
-  backToe4.render();
+  backToe4.renderFast();
 }
