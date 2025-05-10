@@ -337,7 +337,7 @@ function drawMap(){
   var cube = new Cube();
   for(var i = 0; i < 32; i++){  
     for(var j = 0; j < 32; j++){
-      if (i < 1 || i > 30 || j < 1 || j > 30) {
+      if (map[i][j] == -1) {
         cube = new Cube();
         cube.color = [0.3, 0.1, 0.1, 1.0];
         cube.matrix.translate(i, -0.5, j);
