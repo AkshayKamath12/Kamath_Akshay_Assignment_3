@@ -78,6 +78,10 @@ let gemsColor2 = [0.0, 0.0, 1.0, 1.0];
 let gemsColor3 = [1.0, 0.0, 0.0, 1.0];
 
 function addActionsForHtmlUI(){
+  document.getElementById("perspective").addEventListener("click", function(){
+    camera.eye.elements = [4.36159610748291, 5.091113090515137, -2.926283121109009];
+    camera.at.elements = [11.161596298217773, 0.33325591683387756, -11.952878952026367];
+  });
   canvas.addEventListener('mousedown', (e) => {
   if (e.shiftKey) {
     gemsAnimate = true;
@@ -117,7 +121,7 @@ function initTextures() {
         return false;
     }
     skyImg.onload = function() { sendTextureToTEXTURE0(skyImg); };
-    skyImg.src = 'sky.jpeg'; 
+    skyImg.src = 'sky.png'; 
 
     wallTextureImg.onload = function() { sendTextureToTEXTURE1(wallTextureImg); };
     wallTextureImg.src = 'wall.jpg';
@@ -321,11 +325,6 @@ var g_colors = [];  // The array to store the color of a point
 var g_sizes = [];
 */
 
-function addMouseControl() {
-  
-
-  
-}
 
 var g_startTime = performance.now() / 1000.0;
 var g_seconds = performance.now() / 1000.0 - g_startTime;
