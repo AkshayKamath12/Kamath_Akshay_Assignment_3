@@ -22,6 +22,7 @@ var FSHADER_SOURCE = `
   uniform sampler2D u_Sampler0;
   uniform sampler2D u_Sampler1;
   uniform sampler2D u_Sampler2;
+  uniform sampler2D u_Sampler3;
   uniform int u_whichTexture;
   void main() {
     
@@ -35,6 +36,8 @@ var FSHADER_SOURCE = `
       gl_FragColor = texture2D(u_Sampler1, v_UV);
     } else if (u_whichTexture == 2) {
       gl_FragColor = texture2D(u_Sampler2, v_UV);
+    } else if (u_whichTexture == 3) {
+      gl_FragColor = texture2D(u_Sampler3, v_UV);
     } else {
       gl_FragColor = vec4(1, .2, .2, 1);
     }
@@ -55,6 +58,7 @@ let u_GlobalRotateMatrix;
 let u_Sampler0;
 let u_Sampler1;
 let u_Sampler2;
+let u_Sampler3;
 let u_whichTexture;
 
 
@@ -116,6 +120,7 @@ function initTextures() {
     var skyImg = new Image(); 
     var wallTextureImg = new Image(); 
     var fenceTextureImg = new Image(); 
+    var diamondTextureImg = new Image();
     if (!skyImg || !wallTextureImg || !fenceTextureImg) {
         console.log('Failed to create the image object');
         return false;
@@ -129,6 +134,8 @@ function initTextures() {
     fenceTextureImg.onload = function() { sendTextureToTexture2(fenceTextureImg); };
     fenceTextureImg.src = 'fence.png';
 
+    diamondTextureImg.onload = function() { sendTextureToTEXTURE3(diamondTextureImg); };
+    diamondTextureImg.src = 'diamond.jpg';
     return true;
 }
 
@@ -173,6 +180,20 @@ function sendTextureToTexture2(image) {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); // Set texture filtering
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
     gl.uniform1i(u_Sampler2, 2); // Pass the texture unit 2 to u_Sampler2
+}
+
+function sendTextureToTEXTURE3(image) {
+    var texture = gl.createTexture(); // Create a texture object
+    if (!texture) {
+        console.log('Failed to create the texture object');
+        return false;
+    }
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1); // Flip the image's y axis
+    gl.activeTexture(gl.TEXTURE3); // Activate texture unit 3
+    gl.bindTexture(gl.TEXTURE_2D, texture); // Bind the texture object to target
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); // Set texture filtering
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+    gl.uniform1i(u_Sampler3, 3); // Pass the texture unit 3 to u_Sampler3
 }
 
 function setupWebGL(){
@@ -255,6 +276,12 @@ function connectVariablesToGLSL(){
   u_Sampler2 = gl.getUniformLocation(gl.program, 'u_Sampler2');
   if (!u_Sampler2) {
       console.log('Failed to get the storage location of u_Sampler2');
+      return;
+  }
+
+  u_Sampler3 = gl.getUniformLocation(gl.program, 'u_Sampler3');
+  if (!u_Sampler3) {
+      console.log('Failed to get the storage location of u_Sampler3');
       return;
   }
 
@@ -1020,7 +1047,7 @@ function drawSteve(x, y, z){
 
   var body = new Cube();
   //minecraft diamond color
-  body.color = [0.2, 0.6, 0.8, 1.0]
+  body.textureNum = 3;
   body.matrix = bodyMatrix;
   body.matrix.translate(0, -0.8, -0.1);
   var leftArmMatrix = new Matrix4(body.matrix);
@@ -1030,7 +1057,7 @@ function drawSteve(x, y, z){
   body.renderFast();
 
   var leftArm = new Cube();
-  leftArm.color = [0.2, 0.6, 0.8, 1.0]
+  leftArm.textureNum = 3;
   leftArm.matrix = leftArmMatrix;
   leftArm.matrix.translate(0.5, 0.55, -0.25);
   leftArm.matrix.rotate(-90, 0, 1, 0);
@@ -1046,7 +1073,7 @@ function drawSteve(x, y, z){
   leftHand.renderFast();
 
   var rightArm = new Cube();
-  rightArm.color = [0.2, 0.6, 0.8, 1.0]
+  rightArm.textureNum = 3;
   rightArm.matrix = rightArmMatrix;
   rightArm.matrix.translate(0, 0.55, 0.95);
   rightArm.matrix.rotate(90, 0, 1, 0);
